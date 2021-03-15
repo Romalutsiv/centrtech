@@ -1,4 +1,4 @@
-package com.myproject.enums;
+package com.myproject.centrtech.enums;
 
 public enum Defects {
     CHARGER                 ("зарядний пристрій"),

@@ -1,38 +1,63 @@
 package com.myproject.centrtech.controller;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import com.myproject.centrtech.enums.Defects;
+import com.myproject.centrtech.enums.OrderType;
 import com.myproject.centrtech.model.Client;
 import com.myproject.centrtech.model.Device;
-import com.myproject.enums.Defects;
+import com.myproject.centrtech.model.Order;
+import com.myproject.centrtech.repo.ClientRepo;
+import com.myproject.centrtech.repo.DeviceRepo;
+import com.myproject.centrtech.repo.OrderRepo;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
+@RequestMapping({"/orders", "/"})
 public class OrderController {
 
-    @RequestMapping(value = "/orders", method = RequestMethod.GET)
-    public String orders() {
+    @Autowired
+    OrderRepo orderRepo;
+
+    @Autowired
+    ClientRepo clientRepo;
+
+    @Autowired
+    DeviceRepo deviceRepo;
+
+    @GetMapping()
+    public String orders(@RequestParam(name="type", required = false) String type,Model model) {
+        Iterable<Order> orders;
+        if(type != null){
+            orders = orderRepo.findByOrderType(OrderType.valueOf(type));
+        } else{
+            orders = orderRepo.findAll();
+        }
+        model.addAttribute("orders", orders);
         return "orders";
     }
-    @RequestMapping(value = "/order", method = RequestMethod.GET)
-    public String order(Model model){
-        return "order";
-    }
-    @RequestMapping(value = "neworder", method = RequestMethod.GET)
+
+    @GetMapping("neworder")
     public String newOrder(Model model){
         model.addAttribute("defects", Defects.values());
         return "new_order";
     }
-    @RequestMapping(value = "/order", method = RequestMethod.POST)
+
+    @PostMapping("orders")
     public String addOrder(
             @RequestParam String name,
             @RequestParam String lastname,
@@ -45,18 +70,35 @@ public class OrderController {
             @RequestParam String serialNumber,
             @RequestParam String devicePass,
             @RequestParam Map<String, String> form,
-            @RequestParam String text
+            @RequestParam String text,
+            Model model
      ){
+        Device device = new Device(type, deviceName, deviceModel, serialNumber, text);
+        Set<Defects> def = new HashSet<>();
         Set<String> defects = Arrays.stream(Defects.values())
             .map(Defects::name)
             .collect(Collectors.toSet());
-        Device device = new Device(type, deviceName, deviceModel, serialNumber, text);
+        
+        for (String defect : form.keySet()) {
+            if(defects.contains(defect)){
+                def.add(Defects.valueOf(defect));
+            }
+        }
+        device.setDefects(def);
+        deviceRepo.save(device);
         Client client = new Client(name, lastname, mail, addres);
-        client.setDevice(device);
+        clientRepo.save(client);
+        Order order  = new Order(client, device);
+        order.setOrderType(OrderType.NEW);
+        orderRepo.save(order);
         
-        
-
-        return "";
+        return "redirect:/orders";
     }
 
+    @GetMapping("delete/{order}")
+    public String delete(@PathVariable Order order){
+        orderRepo.delete(order);
+        return "redirect:/orders";
+
+    }
 }
