@@ -3,7 +3,6 @@ package com.myproject.centrtech.controller;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
@@ -41,11 +39,9 @@ public class OrderController {
 
     @GetMapping()
     public String orders(@RequestParam(name="type", required = false) String type,Model model) {
-        Iterable<Order> orders;
+        Iterable<Order> orders = orderRepo.findAll();
         if(type != null){
             orders = orderRepo.findByOrderType(OrderType.valueOf(type));
-        } else{
-            orders = orderRepo.findAll();
         }
         model.addAttribute("orders", orders);
         return "orders";
@@ -73,7 +69,7 @@ public class OrderController {
             @RequestParam String text,
             Model model
      ){
-        Device device = new Device(type, deviceName, deviceModel, serialNumber, text);
+        Device device = new Device(type, deviceName, deviceModel, serialNumber, devicePass, text);
         Set<Defects> def = new HashSet<>();
         Set<String> defects = Arrays.stream(Defects.values())
             .map(Defects::name)

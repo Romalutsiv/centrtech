@@ -52,14 +52,8 @@
 
       <div class="collapse navbar-collapse" id="navbarsExample07">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="dropdown07" data-bs-toggle="dropdown" aria-expanded="false">Закази</a>
-                <ul class="dropdown-menu" aria-labelledby="dropdown07">
-                  <li><a class="dropdown-item" href="/orders?type=NEW">Нові      <span class="badge bg-danger text-light rounded-pill align-text-top">27</span></a> </li>
-                  <li><a class="dropdown-item" href="/orders?type=FOR_PERFORMANCE">Виконуються       <span class="badge bg-warning text-light rounded-pill align-text-top">7</span></a></li>
-                  <li><a class="dropdown-item" href="/orders?type=TO_PAY">Виконані (до оплати)      <span class="badge bg-success text-light rounded-pill align-text-top">3</span></a></li>
-                  <li><a class="dropdown-item" href="/orders?type=PAID">Виконані (оплачені)</a></li>
-                </ul>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Закази</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#">Склад</a>
