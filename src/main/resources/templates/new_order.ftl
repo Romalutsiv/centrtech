@@ -1,8 +1,7 @@
 <#ftl encoding='UTF-8'>
 <#import "parts/common.ftl" as c>
-
 <@c.page>
-      <div class="container">
+  <div class="container">
     <div class="bd-example">
       <div class="row  row-cols-1  ">
         <div class="col">

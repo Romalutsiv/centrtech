@@ -7,15 +7,19 @@ import javax.persistence.*;
 
 import com.myproject.centrtech.enums.UserRole;
 
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "usr")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 public class User implements UserDetails{
     @Id
@@ -28,6 +32,8 @@ public class User implements UserDetails{
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<UserRole> roles;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    private Set<Order> orders;
 
 
     @Override

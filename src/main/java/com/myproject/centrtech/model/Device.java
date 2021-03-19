@@ -37,4 +37,5 @@ public class Device {
     private Set<Defects> defects;             //дефекти
     @NonNull
     private String text;                //замовлена несправність
+    
 }

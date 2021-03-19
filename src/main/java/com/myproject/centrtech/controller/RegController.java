@@ -29,10 +29,11 @@ public class RegController {
         User userFromDb = userRepo.findByUsername(user.getUsername());
         if(userFromDb != null){
             System.out.println("існує");
+        } else{
+            user.setActive(true);
+            user.setRoles(Collections.singleton(UserRole.USER));
+            userRepo.save(user);
         }
-        user.setActive(true);
-        user.setRoles(Collections.singleton(UserRole.USER));
-        userRepo.save(user);
 
         return "redirect:/login";
     }
