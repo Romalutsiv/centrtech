@@ -1,31 +1,111 @@
-var a = new Array(7)
-  for (var i =0; i < a.length; i++){
-    a[i] = [document.getElementById('input' +(i+1)+ '1'), document.getElementById('input' +(i+1)+ '2'), document.getElementById('input' +(i+1)+ '3')];
-  }
+var a = new Array()
+var s= new Array(a.length)
+// var qw = new Array()
+  var b = [document.getElementById('input1'), document.getElementById('input2'), document.getElementById('input3')]
+  a.push(b)
   var sum1 = document.getElementById('sum1')
   var del = document.getElementById('del')
   console.log(a)
-  for(var x = 0; x <a.length; x++){
-  double(a, x)
-  }
+  double(a)
+  
 
-  function double(inp, x){
- 
-      inp[x][0].addEventListener('input', function(e) {
-      inp[x][2].value = inp[x][0].value * inp[x][1].value
-      sum1.innerHTML = '<i> Загальна сума (грн):</i> <b>' + (+del.value + +inp[0][2].value + +inp[1][2].value + +inp[2][2].value + +inp[3][2].value + +inp[4][2].value + +inp[5][2].value + +inp[6][2].value) +'</b>'
-    })
-    inp[x][1].addEventListener('input', function(e) {
-      inp[x][2].value = inp[x][0].value * inp[x][1].value
-      sum1.innerHTML = '<i> Загальна сума (грн):</i> <b>' + (+del.value + +inp[0][2].value + +inp[1][2].value + +inp[2][2].value + +inp[3][2].value + +inp[4][2].value + +inp[5][2].value + +inp[6][2].value) +'</b>'
+  function double(inp){
+      
+      var ss = 0
+        inp.forEach(function(el, i){
+          el[0].addEventListener('input', function(e) {
+          el[2].value = el[0].value * el[1].value
+          s[i] = el[2].value
+          ss = s.reduce(function(a,b){
+            return (+a)+(+b);
+          })
+          console.log(ss)
+          sum1.innerHTML = '<i> Загальна сума (грн):</i> <b>' + (+del.value + +ss) +'</b>'
+        })
+      })      
+      inp.forEach(function(el, i){
+        el[1].addEventListener('input', function(e) {
+        el[2].value = el[0].value * el[1].value
+        s[i] = el[2].value
+        ss = s.reduce(function(a,b){
+        return (+a)+(+b);
       })
+        console.log(ss)
+        sum1.innerHTML = '<i> Загальна сума (грн):</i> <b>' + (+del.value + +ss) +'</b>'
+      })
+    })  
+      
+
+      
+
       del.addEventListener('input', function(e) {
-        sum1.innerHTML = '<i> Загальна сума (грн):</i> <b>' + (+del.value + +inp[0][2].value + +inp[1][2].value + +inp[2][2].value + +inp[3][2].value + +inp[4][2].value + +inp[5][2].value + +inp[6][2].value) +'</b>'
+        
+        sum1.innerHTML = '<i> Загальна сума (грн):</i> <b>' + (+del.value + +ss) +'</b>' 
+        
       })
   }
 
-  
+ 
 
   
-  sum1.value = a[0][2] + a[1][2]
-  console.log(sum1)
+
+  function addRow(id){
+    sell = document.getElementById('sell')
+    var tbody = document.getElementById(id).getElementsByTagName("TBODY")[0];
+    var row = document.createElement("TR")
+    var td1 = document.createElement("TH")
+    td1.appendChild(document.createTextNode(a.length + +1))
+    
+    var td2 = document.createElement("TD")
+    var td3 = document.createElement("TD")
+    var td4 = document.createElement("TD")
+    var td5 = document.createElement("TD")
+    var td6 = document.createElement("TD")
+    var inpname = document.createElement('input')
+    inpname.className = 'form-control'
+    inpname.name = 'name'
+    td2.appendChild (inpname)
+    var inpcount = document.createElement('input')
+    inpcount.type = 'number'
+    inpcount.name = 'count'
+    inpcount.className = 'form-control'
+    inpcount.value = '1'
+    inpcount.min = '0'
+    td3.appendChild (inpcount)
+    var inpprice = document.createElement('input')
+    inpprice.className = 'form-control'
+    inpprice.type = 'number'
+    inpprice.name = 'price'
+    inpprice.min = '0.0'
+    inpprice.value = '0.0'
+    inpprice.step = 'any'
+    td4.appendChild (inpprice)
+    var sel = document.createElement('select')
+    sel.className = 'form-control'
+    sel.name = "type"
+    var op = document.createElement('option')
+    for(var i =0; i < sell.length; i++){
+      sel.options[i] = new Option(sell.options[i].text, sell.options[i].value)
+    }
+    var inpsum = document.createElement('input')
+    inpsum.className = 'form-control'
+    inpsum.disabled = 'disabled'
+    td5.appendChild (inpsum)
+    td6.appendChild (sel)
+    a.push([inpcount, inpprice, inpsum])
+    row.appendChild(td1);
+    row.appendChild(td2);
+    row.appendChild(td3);
+    row.appendChild(td4);
+    row.appendChild(td5);
+    row.appendChild(td6);
+    tbody.appendChild(row);
+    double(a)
+  }
+
+  Date.prototype.toDateInputValue = (function() {
+    var local = new Date(this);
+    local.setMinutes(this.getMinutes() - this.getTimezoneOffset());
+    return local.toJSON().slice(0,10);
+});
+document.getElementById('datePicker').value = new Date().toDateInputValue();

@@ -120,7 +120,7 @@ public class OrderController {
         // res.setContentType("application/octet-stream");
         res.setContentType("application/pdf");
         String headerKey = "Content-Disposition";
-        String headerValue = "attachement; filename=заказ№"+order.getId()+"_від"+ order.getDateCreate()+"(receiving).xlsx";
+        String headerValue = "attachement; filename=заказ№"+order.getId()+"_від"+ order.getDateCreate()+"(receiving).pdf";
 
         res.setHeader(headerKey, headerValue);
         File file = new File("C:/Users/user/Desktop/service.xlsx");
@@ -151,5 +151,20 @@ public class OrderController {
         orderRepo.save(order);
 
         return "redirect:/one/{order}";
+    }
+
+    @GetMapping("/orderchek/{order}")
+    public String orderChek(@PathVariable Order order, Model model){
+        model.addAttribute("order", order);
+        return "check";
+    }
+
+    @PostMapping("orderchek/new")
+    public String addChek(@RequestParam(name = "order_id") Order order, @RequestParam Map<String, String> form, Model model){
+        form.forEach((k, x)-> System.out.println("Key: " + k + " value: " + x));
+        // order.setOrderType(OrderType.TO_PAY);
+        System.out.println(order.getDateCreate());
+        model.addAttribute("order", order); 
+        return "one_order";
     }
 }

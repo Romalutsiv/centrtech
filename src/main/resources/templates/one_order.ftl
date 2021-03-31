@@ -19,9 +19,9 @@
                         <a href="/orders" class="btn btn-secondary">Назад</a>
                         <#if order.getOrderType().getStyle() == "danger">
                             <a href="/orders/accept/${order.id}" class="btn btn-${order.getOrderType().getStyle()}">Прийняти заказ</a>
-                            <a href="/orders/receiving/${order.id}" class="text-end btn btn-success">PDF/Excel</a>
+                            <a href="/orders/receiving/${order.id}" class="text-end btn btn-success">PDF</a>
                         <#elseif order.getOrderType().getStyle() == "warning">
-                            <a href="/orders/to_pay/${order.id}" class="btn btn-${order.getOrderType().getStyle()}">До оплати</a>
+                            <a href="/orders/orderchek/${order.id}" class="btn btn-${order.getOrderType().getStyle()}">До оплати</a>
                             <a href="/orders/receiving/${order.id}" class="text-end btn btn-success">Excel</a>
                         <#elseif order.getOrderType().getStyle() == "success">
                             <a href="/orders/receiving/${order.id}" class="text-end btn btn-success">Excel@</a>

@@ -1,16 +1,46 @@
 package com.myproject.centrtech.model;
 
+import java.util.Set;
+
+import javax.annotation.Generated;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+@Getter
+@Setter
+@NoArgsConstructor
+@RequiredArgsConstructor
+@Entity
 public class Goods {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    @NonNull
     private String name;
+    @NonNull
     private int count;
-    private double price;
-    private double priceDifference;
-    private String type;
-
-    private String storage;
+    @NonNull
+    private double priceNew;
+    private double priceOld;
+    private double priceDifference = 0;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "goodsType_id")
+    private GoodsType type;
+    
+    @ManyToMany(mappedBy = "goodsSet")
+    private Set<Invoice> invoices;
+    private Office storage;
     private String provider;
     
 }
