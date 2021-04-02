@@ -39,10 +39,10 @@ public class OrderRecPDFExporter {
         Document doc = new Document(PageSize.A4);
 
         PdfWriter.getInstance(doc, res.getOutputStream());
-        Image png = Image.getInstance("C:/Users/user/Desktop/logo3.png");
-        png.scalePercent(33);
+        // Image png = Image.getInstance("./static/logo.jpg");
+        // png.scalePercent(33);
         doc.open();
-        doc.add(png);
+        // doc.add(png);
         Font hex = new Font(Font.BOLDITALIC, 16);
         Phrase phrase1 = new Phrase("Акт приймання техніки та устаткування №" + order.getId() + " від: " +order.getDateCreate(), hex);
         Paragraph paragraph1 = new Paragraph(phrase1);
@@ -161,7 +161,7 @@ public class OrderRecPDFExporter {
         table.addCell(cell);
         doc.add(table);
 
-        doc.add(png);
+        // doc.add(png);
         hex = new Font(Font.BOLDITALIC, 16);
         phrase1 = new Phrase("Акт приймання техніки та устаткування №" + order.getId() + " від: " +order.getDateCreate(), hex);
         paragraph1 = new Paragraph(phrase1);

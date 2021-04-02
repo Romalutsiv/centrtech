@@ -13,10 +13,12 @@ import java.util.Set;
 import com.myproject.centrtech.model.Goods;
 import com.myproject.centrtech.model.GoodsType;
 import com.myproject.centrtech.model.Invoice;
+import com.myproject.centrtech.model.ShopGoodsAndService;
 import com.myproject.centrtech.repo.GoodsRepo;
 import com.myproject.centrtech.repo.GoodsTypeRepo;
 import com.myproject.centrtech.repo.InvoiceRepo;
 
+import com.myproject.centrtech.repo.ShopAndServiceRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,8 +35,11 @@ public class GoodsController {
     GoodsRepo goodsRepo;
     @Autowired
     GoodsTypeRepo goodsTypeRepo;
-    @Autowired 
+    @Autowired
     InvoiceRepo invoiceRepo;
+    @Autowired
+    ShopAndServiceRepo shopRepo;
+
     @GetMapping("/new")
     public String incomeInvoide(Model model){
         Iterable<GoodsType> gtype = goodsTypeRepo.findAll();
@@ -65,7 +70,7 @@ public class GoodsController {
             model.addAttribute("good", "nema");
         }
         model.addAttribute("goods", goods);
-        
+
         return "goods";
     }
 
@@ -79,7 +84,7 @@ public class GoodsController {
         @RequestParam ArrayList<String> count,
         @RequestParam ArrayList<String> price,
         @RequestParam(name = "type") ArrayList<GoodsType> type,
-        @RequestParam Map<String, String> form 
+        @RequestParam Map<String, String> form
     ){
         Set<Goods> goods = new HashSet<>();
         Goods good;
@@ -92,12 +97,13 @@ public class GoodsController {
                     good.setPriceNew(Double.valueOf(price.get(c)));
                     good.setPriceDifference(good.getPriceOld() - good.getPriceNew());
 
+
                 }else{
                         good = new Goods(name.get(c), Integer.valueOf(count.get(c)), Double.valueOf(price.get(c)));
                         good.setPriceOld(good.getPriceNew());
                         good.setPriceDifference(good.getPriceOld() - good.getPriceNew());
                         good.setType(type.get(c));
-                        
+
                 }
             goodsRepo.save(good);
 
@@ -108,29 +114,57 @@ public class GoodsController {
         // }
         // System.out.print("name: " + name);
         // System.out.print("count: " + count);
-        
+
         String[] dateV = date.split("-");
         LocalDate data = LocalDate.of(Integer.valueOf(dateV[0]), Integer.valueOf(dateV[1]), Integer.valueOf(dateV[2]));
         System.out.print(data);
-        Invoice invoice = new Invoice(data, provider, Double.valueOf(delivery));
-        invoice.setGoodsSet(goods);
-        // invoice.setRecipient(recipient);
-        for (Goods god : goods) {
-            Set<Invoice> in = new Set();
-            if(god.getInvoices()!=null){
-                in = god.getInvoices();
-                in.add(invoice);
-                god.setInvoices(in);
-                goodsRepo.save(god);
-            }else {
-            in.add(invoice);
-            god.setInvoices(in);
-            goodsRepo.save(god);
-           }
-        }
-        invoiceRepo.save(invoice);
+//        Invoice invoice = new Invoice(data, provider, Double.valueOf(delivery));
+//        invoice.setGoodsSet(goods);
+//        // invoice.setRecipient(recipient);
+//        for (Goods god : goods) {
+//            Set<Invoice> in = new HashSet<>();
+//            if(god.getInvoices()!=null){
+//                in = god.getInvoices();
+//                in.add(invoice);
+//                god.setInvoices(in);
+//                goodsRepo.save(god);
+//            }else {
+//            in.add(invoice);
+//            god.setInvoices(in);
+//            goodsRepo.save(god);
+//           }
+//        }
+//        invoiceRepo.save(invoice);
 
-        
+
+        return "redirect:/goods";
+    }
+
+    @GetMapping("/shop")
+    public String shop(Model model){
+        Iterable<Goods> goods = goodsRepo.findAll();
+        model.addAttribute("goods", goods);
+        return "new_shop_good";
+    }
+
+    @PostMapping("/shop/new/q")
+    public String addShop(@RequestParam(name = "good") Goods[] goods,
+                          @RequestParam String price){
+        ShopGoodsAndService shop = new ShopGoodsAndService();
+        shop.setName(goods[0].getName());
+        shop.setActive(true);
+        shop.setPrice(Double.valueOf(price));
+        for (Goods g: goods) {
+            shop.addGoods(g);
+        }
+//        shop.setGoods(Collections.singleton(goods));
+        shopRepo.save(shop);
+//        goods.setShopGoodsAndServices(Collections.singleton(shop));
+        for (Goods g: goods) {
+            goodsRepo.save(g);
+        }
+
+
         return "redirect:/goods";
     }
     

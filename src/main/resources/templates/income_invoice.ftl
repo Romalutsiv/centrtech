@@ -36,7 +36,7 @@
                   </div>
                   <div class="input-group mb-3">
                     <span class="input-group-text" for="">Доставка</span>
-                    <input type="number" class="form-control" placeholder="доставка" name="delivery" id="del" value="0" min="0">
+                    <input type="number" class="form-control" step=any placeholder="доставка" name="delivery" id="del" value="0.0" min="0">
                   </div>
                   <button class="btn btn-secondary" onclick="addRow('myTable');return false;">+</button>
                     <table id="myTable" class="table">

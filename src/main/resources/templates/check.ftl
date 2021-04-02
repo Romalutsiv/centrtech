@@ -12,7 +12,7 @@
         <span id="counts" class="badge bg-secondary rounded-pill">0</span>
       </h4>
       <form action="/orderchek/new" method="post">
-      <ul id="list" class="list-group mb-3">
+      <ul id="list" class="list-group mb-3 take-away_block">
         <li id="all" class="list-group-item d-flex justify-content-between">
           <span>Total (UAH)</span>
           <strong >₴0</strong>

@@ -30,17 +30,19 @@ public class Invoice {
     private Long id;
     @NonNull
     private LocalDate dataCreate;
-    @ManyToMany
-    @JoinTable(name="goods",
-        joinColumns = @JoinColumn(name="invoice_id"),
-        inverseJoinColumns = @JoinColumn(name="goods_id"))
-    private Set<Goods> goodsSet;
+//    @ManyToMany
+//    @JoinTable(name="goods",
+//        joinColumns = @JoinColumn(name="invoice_id"),
+//        inverseJoinColumns = @JoinColumn(name="goods_id"))
+//    private Set<Goods> goodsSet;
     @NonNull
-    private String sender;            //відправник   
+    private String sender;
+
+    //відправник
     // @NonNull 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "office_id")          
-    private Office recipient;         //отримувач 
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "office_id")
+//    private Office recipient;         //отримувач
     @NonNull          
     private double delivery;            //доставка 
 

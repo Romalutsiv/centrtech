@@ -12,8 +12,8 @@ Vue.component('message-row', {
         }
     },
     template: 
-        '<div :id=message.butn class="d-flex">' +
-            '<li class="list-group-item d-flex justify-content-between lh-sm col-9">' +
+        '<div class="d-flex">' +
+            '<li v-if="message.storage_count==0" class="list-group-item d-flex justify-content-between lh-sm col-12 not-available ">' +
                 '<div>' +
                     '<h6 class="my-0">{{message.name}}</h6>'+ 
                     '<small v-if="message.storage_count == null" :id="message.name" class="text-muted"></small>' +
@@ -21,7 +21,14 @@ Vue.component('message-row', {
                 '</div>'+
                 '<span class="text-muted">{{message.price}} UAH</span>'+
             '</li>'+
-            '<button v-show="message.storage_count!=0" :id=message.but type="button" class="btn btn-outline-secondary col-3" @click="add(message)"><h3>+</h3></button>'+
+            '<li v-else="message.storage_count!=0" @click="add(message)" class="list-group-item d-flex justify-content-between lh-sm col-12 add-goods">' +
+                '<div>' +
+                    '<h6 class="my-0">{{message.name}}</h6>'+ 
+                    '<small v-if="message.storage_count == null" :id="message.name" class="text-muted"></small>' +
+                    '<small v-else :id="message.name" class="text-muted">кількість на складі: {{message.storage_count}}</small>' +
+                '</div>'+
+                '<span class="text-muted">{{message.price}} UAH</span>'+
+            '</li>'+
         '</div>',
     methods:{
         add(message){
@@ -43,8 +50,9 @@ Vue.component('message-row', {
                 // document.getElementById(message.but).remove()}
                 mmm[mmm.indexOf(message)].storage_count = (+mmm[mmm.indexOf(message)].storage_count - +1)
                 counts.innerText = 'кількість '+ mmm[mmm.indexOf(message)].count + 'x' +mmm[mmm.indexOf(message)].price +'₴'
+                counts.innerHTML = 'кількість '+ mmm[mmm.indexOf(message)].count + 'x' +mmm[mmm.indexOf(message)].price +'₴<input type="hidden" name="count" value="'+mmm[mmm.indexOf(message)].count+'"></input>'
                 sumaEl.innerText = '₴' + suma 
-                if(message.storage_count != NaN){   
+                if(message.storage_count != NaN){
                 stor.innerText='кількість на складі: ' + mmm[mmm.indexOf(message)].storage_count}
                 if(mmm[mmm.indexOf(message)].storage_count == 0) {
                     console.log(mmm[mmm.indexOf(message)].storage_count)
@@ -56,16 +64,19 @@ Vue.component('message-row', {
                 // document.getElementById(message.but).remove()}
 
                 mmm[mmm.indexOf(message)].storage_count = (+mmm[mmm.indexOf(message)].storage_count - +1)
-                if(message.storage_count != null){   
+                if(message.storage_count != null){
                     stor.innerText='кількість на складі: ' + mmm[mmm.indexOf(message)].storage_count}
                 list.insertAdjacentHTML('afterbegin',
-                    '<div id="' + mmm[mmm.indexOf(message)].name +'c" class="row">'+
-                        '<button type="button" class="btn btn-outline-secondary col-3" onclick="rem('+ elem +')"><h6>-</h6></button>'+   
-                        '<li class="col list-group-item d-flex justify-content-between lh-sm">'+
+                    '<div  id="' + mmm[mmm.indexOf(message)].name +'c" class="">'+
+                        // '<button type="button" class="btn btn-outline-secondary col-3" ><h6>-</h6></button>'+   
+                        '<li onclick="rem('+ elem +')" class="col list-group-item d-flex justify-content-between lh-sm take-away">'+
                         '<div>'+
                             '<h6 class="my-0">' + mmm[mmm.indexOf(message)].name + '</h6>'+
-                            '<input type="hidden" name="'+mmm[mmm.indexOf(message)].name+'_name" value="'+mmm[mmm.indexOf(message)].name+'"></input>'+
-                            '<small id="' + mmm[mmm.indexOf(message)].name +'counter" class="text-muted">кількість '+ mmm[mmm.indexOf(message)].count + 'x' +mmm[mmm.indexOf(message)].price+'₴</small>' +
+                            '<input type="hidden" name="name" value="'+mmm[mmm.indexOf(message)].id+'"></input>'+
+
+                            '<small id="' + mmm[mmm.indexOf(message)].name +'counter" class="text-muted">кількість '+ mmm[mmm.indexOf(message)].count + 'x' +mmm[mmm.indexOf(message)].price+'₴' +
+                    '<input type="hidden" name="count" value="'+mmm[mmm.indexOf(message)].count+'"></input>'+
+                    '</small>' +
                         '</div>' +
                         '<span id="' + mmm[mmm.indexOf(message)].name +'suma" class="text-muted">₴' + mmm[mmm.indexOf(message)].price+'</span>'+
                         '</li>'+
@@ -101,11 +112,13 @@ Vue.component('mes-list', {
         '<div class="col-sd-5 col-lg-7">'+
             '<input  v-model="search" id="saerch" class="form-control" placeholder="Ведіть назву товару чи послуги">'+
         '</div><br>' +
-        '<div class="col-md-8 col-lg-7">' +
-            '<ul class="list-group mb-4">'+
-                '<message-row  v-for="message in searchHendler" :key="message.id" :message="message"/>'+
-                '</ul>'+
-        '</div>'+
+        '<div class="row g-7">' +
+            '<div class="col-md-8 col-lg-7">' +
+                '<ul class="list-group mb-4 take-away_block">'+
+                    '<message-row  v-for="message in searchHendler" :key="message.id" :message="message"/>'+
+                    '</ul>'+
+            '</div>'+
+        '</div>' +
     '</div>',
     created: function() {
         messageApi.get().then(result =>

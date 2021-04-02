@@ -31,6 +31,10 @@ public class Order {
     @JoinColumn(name = "device_id")
     @NonNull
     private Device device;              //дані пристрою
+
+//    @OneToOne
+//    @JoinColumn(name = "chek_id")
+//    private Chek chek;
     private OrderType orderType;        //тип заказа(новий, виконаний..)
     private double price;               //ціна заказу
 }

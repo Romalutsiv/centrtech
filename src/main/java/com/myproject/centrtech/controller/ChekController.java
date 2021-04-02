@@ -1,76 +1,83 @@
 package com.myproject.centrtech.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.myproject.centrtech.model.Goods;
+import com.myproject.centrtech.model.ShopGoodsAndService;
+import com.myproject.centrtech.model.Views;
+import com.myproject.centrtech.repo.ShopAndServiceRepo;
+import org.springframework.beans.BeanUtils;
+import org.springframework.web.bind.annotation.*;
 
-import com.myproject.centrtech.exceptions.NotFoundException;
-
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.*;
 
 @RestController
 @RequestMapping("/chek")
 public class ChekController {
-    
+
+    private final ShopAndServiceRepo shopRepo;
     private int counter = 4;
 
     private List<Map<String, String>> messages = new ArrayList<Map<String, String>>() {{
-        add(new HashMap<String, String>() {{ put("id", "1"); put("name", "SSD"); put("price", "150"); put("count", "1"); put("storage_count", "1"); put("but", "SSDb"); put("butn", "SSDn"); }});
-        add(new HashMap<String, String>() {{ put("id", "2"); put("name", "БП GameMax GM-400B (новий)"); put("price", "15"); put("count", "1"); put("storage_count", "10"); put("but", "GameMaxb"); put("butn", "GameMaxn"); }});
+        add(new HashMap<String, String>() {{ put("id", "1"); put("name", "SSD"); put("price", "150"); put("count", "1"); put("storage_count", "10"); put("but", "SSDb"); put("butn", "SSDn"); }});
+        add(new HashMap<String, String>() {{ put("id", "2"); put("name", "БП GameMax GM-400B (новий)"); put("price", "15"); put("count", "1"); put("storage_count", "110"); put("but", "GameMaxb"); put("butn", "GameMaxn"); }});
         add(new HashMap<String, String>() {{ put("id", "3"); put("name", "заміна ОС"); put("price", "400"); put("count", "1"); put("but", "жосткий дискb"); put("butn", "жосткий дискn"); }});
         
     }};
 
-    @GetMapping
-    public List<Map<String, String>> list() {
+    public ChekController(ShopAndServiceRepo shopRepo) {
+        this.shopRepo = shopRepo;
+    }
 
-        return messages;
+    @GetMapping
+    @JsonView(Views.Name.class)
+    public List<ShopGoodsAndService> list() {
+        List<ShopGoodsAndService> sh = shopRepo.findAll();
+        Set<Goods> gg = new HashSet<>();
+        List<Goods> goods;
+        int min = 0;
+        for (ShopGoodsAndService s: sh) {
+            gg = s.getGoods();
+            if(gg.size() > 0){
+                goods = new ArrayList<>(gg);
+                min = goods.get(0).getCount();
+                for (Goods g: goods) {
+
+                    if(g.getCount() < min){
+                        min = g.getCount();
+                    }
+                }
+            }
+
+
+
+
+            s.setStorage_count(min);
+        }
+        return shopRepo.findAll();
     }
 
     @GetMapping("{id}")
-    public Map<String, String> getOne(@PathVariable String id) {
-        return getMessage(id);
+    public ShopGoodsAndService getOne(@PathVariable("id") ShopGoodsAndService shopGoodsAndService) {
+        return shopGoodsAndService;
     }
 
-    private Map<String, String> getMessage(@PathVariable String id) {
-        return messages.stream()
-                .filter(message -> message.get("id").equals(id))
-                .findFirst()
-                .orElseThrow(NotFoundException::new);
-    }
 
     @PostMapping
-    public Map<String, String> create(@RequestBody Map<String, String> message) {
-        message.put("id", String.valueOf(counter++));
+    public ShopGoodsAndService create(@RequestBody ShopGoodsAndService shopGoodsAndService) {
 
-        messages.add(message);
-
-        return message;
+        return shopRepo.save(shopGoodsAndService);
     }
 
     @PutMapping("{id}")
-    public Map<String, String> update(@PathVariable String id, @RequestBody Map<String, String> message) {
-        Map<String, String> messageFromDb = getMessage(id);
+    public ShopGoodsAndService update(@PathVariable("id") ShopGoodsAndService spDb, @RequestBody ShopGoodsAndService shopGoodsAndService) {
+        BeanUtils.copyProperties(shopGoodsAndService, spDb, "id");
 
-        messageFromDb.putAll(message);
-        messageFromDb.put("id", id);
-
-        return messageFromDb;
+        return shopRepo.save(spDb);
     }
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable String id) {
-        Map<String, String> message = getMessage(id);
-
-        messages.remove(message);
+    public void delete(@PathVariable("id") ShopGoodsAndService sh) {
+        shopRepo.delete(sh);
     }
 
 }

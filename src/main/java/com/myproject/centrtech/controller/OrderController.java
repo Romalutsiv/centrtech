@@ -5,10 +5,7 @@ import com.myproject.centrtech.enums.Defects;
 import com.myproject.centrtech.enums.OrderType;
 import com.myproject.centrtech.exporters.OrderExcelExporter;
 import com.myproject.centrtech.exporters.OrderRecPDFExporter;
-import com.myproject.centrtech.model.Client;
-import com.myproject.centrtech.model.Device;
-import com.myproject.centrtech.model.Order;
-import com.myproject.centrtech.model.User;
+import com.myproject.centrtech.model.*;
 import com.myproject.centrtech.repo.ClientRepo;
 import com.myproject.centrtech.repo.DeviceRepo;
 import com.myproject.centrtech.repo.OrderRepo;
@@ -24,10 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -160,9 +154,15 @@ public class OrderController {
     }
 
     @PostMapping("orderchek/new")
-    public String addChek(@RequestParam(name = "order_id") Order order, @RequestParam Map<String, String> form, Model model){
-        form.forEach((k, x)-> System.out.println("Key: " + k + " value: " + x));
+    public String addChek(@RequestParam(name = "order_id") Order order,
+                          @RequestParam(name = "name") ArrayList<ShopGoodsAndService> sh,
+                          @RequestParam(name = "count") ArrayList<Integer> counts,
+                          Model model){
+//        form.forEach((k, x)-> System.out.println("Key: " + k + " value: " + x));
         // order.setOrderType(OrderType.TO_PAY);
+        System.out.println(counts);
+        System.out.println("____");
+        sh.forEach(e -> {System.out.println("name: " +e.getName());});
         System.out.println(order.getDateCreate());
         model.addAttribute("order", order); 
         return "one_order";

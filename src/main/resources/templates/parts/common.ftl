@@ -24,6 +24,7 @@
       </style>
     
       <link href="/static/assets/dist/css/bootstrap.min.css" rel="stylesheet">
+      <link href="/static/style.css" rel="stylesheet">
     </head>
 
     <#assign
@@ -71,8 +72,7 @@
       </nav>
       <br>
         <#nested>
-      <script src="/static/assets/dist/js/bootstrap.bundle.min.js"></script>
-      <script src="/static/cheatsheet.js"></script>
+      
     </body>
   </html>   
 </#macro>
